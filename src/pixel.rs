@@ -9,6 +9,10 @@ impl Pixel {
     pub fn new() -> Self {
         Pixel { r: 0, g: 0, b: 0 }
     }
+
+    pub fn with_values(r: u32, g: u32, b: u32) -> Self {
+        Pixel { r, g, b }
+    }
 }
 
 impl IntoIterator for Pixel {
