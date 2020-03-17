@@ -1,22 +1,26 @@
 pub struct Pixel {
-    pub r: u32,
-    pub g: u32,
-    pub b: u32,
+    pub r: f32,
+    pub g: f32,
+    pub b: f32,
 }
 
 impl Pixel {
     #[allow(dead_code)]
     pub fn new() -> Self {
-        Pixel { r: 0, g: 0, b: 0 }
+        Pixel {
+            r: 0.,
+            g: 0.,
+            b: 0.,
+        }
     }
 
-    pub fn with_values(r: u32, g: u32, b: u32) -> Self {
+    pub fn with_values(r: f32, g: f32, b: f32) -> Self {
         Pixel { r, g, b }
     }
 }
 
 impl IntoIterator for Pixel {
-    type Item = u32;
+    type Item = f32;
     type IntoIter = PixelIntoIterator;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -33,9 +37,9 @@ pub struct PixelIntoIterator {
 }
 
 impl Iterator for PixelIntoIterator {
-    type Item = u32;
+    type Item = f32;
 
-    fn next(&mut self) -> Option<u32> {
+    fn next(&mut self) -> Option<f32> {
         let result = match self.index {
             0 => self.pixel.r,
             1 => self.pixel.g,
@@ -48,7 +52,7 @@ impl Iterator for PixelIntoIterator {
 }
 
 impl<'a> IntoIterator for &'a Pixel {
-    type Item = u32;
+    type Item = f32;
     type IntoIter = PixelIterator<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -65,8 +69,8 @@ pub struct PixelIterator<'a> {
 }
 
 impl<'a> Iterator for PixelIterator<'a> {
-    type Item = u32;
-    fn next(&mut self) -> Option<u32> {
+    type Item = f32;
+    fn next(&mut self) -> Option<f32> {
         let result = match self.index {
             0 => self.pixel.r,
             1 => self.pixel.g,
