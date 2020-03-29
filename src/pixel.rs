@@ -1,9 +1,8 @@
-extern crate nalgebra as na;
 use na::Vector3;
 
-pub type PixelValueType = u8;
+pub type PixelValueType = f32;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Pixel {
     data: Vector3<PixelValueType>,
 }

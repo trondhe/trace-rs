@@ -9,16 +9,16 @@ pub fn ppm_file_write(filename: &str, image: &Image, max_value: usize) {
 
     write_line_to_file(&mut f, "P3".to_owned());
 
-    let string = image.y_length.to_string() + "\t" + &image.x_length.to_string();
+    let string = image.x_length.to_string() + "\t" + &image.y_length.to_string();
     write_line_to_file(&mut f, string);
 
     let string = max_value.to_string();
     write_line_to_file(&mut f, string);
 
-    for row_index in 0..image.x_length {
+    for y_index in (0..image.y_length).rev().collect::<Vec<usize>>() {
         write_line_to_file(
             &mut f,
-            pixel_to_string(&image.get_x_vec(row_index), max_value, "\t"),
+            pixel_to_string(&image.get_x_vec(y_index), max_value, "\t"),
         );
     }
 }
