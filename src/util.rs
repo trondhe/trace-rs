@@ -19,7 +19,7 @@ pub fn create_test_image() {
 
 pub fn gradient(ray: Ray) -> Pixel {
     let unit_direction = ray.direction().normalize();
-    let t = 0.5 * (unit_direction.x + 1.);
+    let t = 0.5 * (unit_direction.y + 1.);
     let vector = (1. - t) * Vector3::new(1., 1., 1.) + t * Vector3::new(0.5, 0.7, 1.);
     Pixel::new(
         vector.x as PixelValueType,
