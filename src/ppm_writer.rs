@@ -26,12 +26,12 @@ pub fn ppm_file_write(filename: &str, image: &Image, max_value: usize) {
 fn write_line_to_file(f: &mut File, string: String) {
     f.write_all(string.as_bytes())
         .expect("Could not write string to file");
-    if string.chars().rev().nth(0) != Some('\n') {
+    if string.chars().rev().next() != Some('\n') {
         f.write_all(b"\n").expect("error adding newline");
     }
 }
 
-fn pixel_to_string(vector: &Vec<Pixel>, max_value: usize, delimiter: &str) -> String {
+fn pixel_to_string(vector: &[Pixel], max_value: usize, delimiter: &str) -> String {
     let mut string = String::new();
     for pixel in vector {
         let (r, g, b) = pixel.rgb();

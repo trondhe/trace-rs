@@ -17,7 +17,7 @@ impl Image {
         }
     }
 
-    pub fn write_x_vec(&mut self, y_index: usize, x_vec: &Vec<Pixel>) {
+    pub fn write_x_vec(&mut self, y_index: usize, x_vec: &[Pixel]) {
         assert_eq!(
             x_vec.len(),
             self.x_length,

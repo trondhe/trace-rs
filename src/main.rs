@@ -13,8 +13,8 @@ use ppm_writer::ppm_file_write;
 use ray::{Point, PointValueType, Ray};
 use util::{create_test_image, gradient};
 
-static X_SIZE: usize = 20;
-static Y_SIZE: usize = 10;
+static X_SIZE: usize = 400;
+static Y_SIZE: usize = 200;
 
 fn main() {
     let point_origin: Point = Vector3::new(0., 0., 0.);
