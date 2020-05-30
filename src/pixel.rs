@@ -1,6 +1,5 @@
-use na::Vector3;
-
-pub type PixelValueType = f32;
+use crate::types::PixelValueType;
+use nalgebra::Vector3;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Pixel {

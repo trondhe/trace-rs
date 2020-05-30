@@ -26,6 +26,29 @@
             "problemMatcher": "$rustc"
         },
         {
+            "label": "open outputimage",
+            "type": "shell",
+            "command": "C:\\Program Files\\IrfanView\\i_view64.exe",
+            "args": [
+                "output.ppm"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/generated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build, run and view",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "run",
+                "open outputimage"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
             "label": "test",
             "type": "shell",
             "command": "cargo",

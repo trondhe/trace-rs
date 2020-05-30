@@ -1,36 +1,28 @@
-use na::Vector3;
+use crate::types::{Vec3, VecValueType};
 
-pub type PointValueType = f32;
-pub type Point = Vector3<PointValueType>;
+#[derive(Debug, Copy, Clone)]
 pub struct Ray {
-    pub a: Point,
-    pub b: Point,
+    origin: Vec3,
+    direction: Vec3,
 }
-#[allow(dead_code)]
+
 impl Ray {
-    pub fn new() -> Self {
+    pub fn new(origin: Vec3, direction: Vec3) -> Self {
         Ray {
-            a: Vector3::new(0., 0., 0.),
-            b: Vector3::new(0., 0., 0.),
+            origin,
+            direction: direction.normalize(),
         }
     }
 
-    pub fn with_value(origin: Point, direction: Point) -> Self {
-        Ray {
-            a: origin,
-            b: direction,
-        }
+    pub fn p(&self, t: VecValueType) -> Vec3 {
+        self.origin + t * self.direction
     }
 
-    pub fn point_at_parameter(&self, t: PointValueType) -> Point {
-        self.a + t * self.b
+    pub fn origin(&self) -> Vec3 {
+        self.origin
     }
 
-    pub fn origin(&self) -> Point {
-        self.a
-    }
-
-    pub fn direction(&self) -> Point {
-        self.b
+    pub fn direction(&self) -> Vec3 {
+        self.direction
     }
 }

@@ -1,7 +1,8 @@
 use crate::image::Image;
-use crate::pixel::{Pixel, PixelValueType};
+use crate::object::Sphere;
+use crate::pixel::Pixel;
+use crate::types::{PixelValueType, Vec3};
 use crate::{ppm_writer::ppm_file_write, ray::Ray};
-use nalgebra::Vector3;
 
 #[allow(dead_code)]
 pub fn create_test_image() {
@@ -31,10 +32,14 @@ pub fn create_test_image() {
     ppm_file_write("generated/testimage.ppm", &image, 255);
 }
 
-pub fn gradient(ray: Ray) -> Pixel {
+pub fn color(ray: Ray) -> Pixel {
+    let sphere = Sphere::new(0., 0., -1., 0.5);
+    if sphere.hit(ray) {
+        return Pixel::new(1., 0., 0.);
+    }
     let unit_direction = ray.direction().normalize();
     let t = 0.5 * (unit_direction.y + 1.);
-    let vector = (1. - t) * Vector3::new(1., 1., 1.) + t * Vector3::new(0.5, 0.7, 1.);
+    let vector = (1. - t) * Vec3::new(1., 1., 1.) + t * Vec3::new(0.5, 0.7, 1.);
     Pixel::new(
         vector.x as PixelValueType,
         vector.y as PixelValueType,

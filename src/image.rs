@@ -49,7 +49,7 @@ mod test {
     use super::*;
 
     fn create_line4x3(line_number: usize) -> Vec<Pixel> {
-        let line = match line_number {
+        match line_number {
             0 => vec![
                 Pixel::new(0., 0., 0.),
                 Pixel::new(0., 0., 1.),
@@ -74,8 +74,7 @@ mod test {
                 Pixel::new(0., 0., 0.),
                 Pixel::new(0., 0., 0.),
             ],
-        };
-        line
+        }
     }
 
     fn create_test_image4x3() -> Image {
@@ -90,7 +89,7 @@ mod test {
     }
 
     fn create_line3x2(line_number: usize) -> Vec<Pixel> {
-        let line = match line_number {
+        match line_number {
             0 => vec![
                 Pixel::new(0., 0., 0.),
                 Pixel::new(0., 0., 1.),
@@ -106,8 +105,7 @@ mod test {
                 Pixel::new(0., 0., 0.),
                 Pixel::new(0., 0., 0.),
             ],
-        };
-        line
+        }
     }
 
     fn create_test_image3x2() -> Image {
