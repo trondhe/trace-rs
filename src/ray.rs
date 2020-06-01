@@ -26,3 +26,10 @@ impl Ray {
         self.direction
     }
 }
+
+#[derive(Copy, Clone)]
+pub struct RayHit {
+    pub t: VecValueType,
+    pub p: Vec3,
+    pub normal: Vec3,
+}

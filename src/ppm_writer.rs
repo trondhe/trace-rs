@@ -16,10 +16,7 @@ pub fn ppm_file_write(filename: &str, image: &Image, max_value: usize) {
     write_line_to_file(&mut f, string);
 
     for y_index in (0..image.y_length).rev().collect::<Vec<usize>>() {
-        write_line_to_file(
-            &mut f,
-            pixel_to_string(&image.get_x_vec(y_index), max_value, "\t"),
-        );
+        write_line_to_file(&mut f, pixel_to_string(&image.get_x_vec(y_index), "\t"));
     }
 }
 
@@ -31,20 +28,18 @@ fn write_line_to_file(f: &mut File, string: String) {
     }
 }
 
-fn pixel_to_string(vector: &[Pixel], max_value: usize, delimiter: &str) -> String {
+fn pixel_to_string(vector: &[Pixel], delimiter: &str) -> String {
     let mut string = String::new();
     for pixel in vector {
         let (r, g, b) = pixel.rgb();
-        let value_as_usize = (r as f32 * max_value as f32) as usize;
-        string.push_str(&value_as_usize.to_string());
+
+        string.push_str(&r.to_string());
         string.push_str(delimiter);
 
-        let value_as_usize = (g as f32 * max_value as f32) as usize;
-        string.push_str(&value_as_usize.to_string());
+        string.push_str(&g.to_string());
         string.push_str(delimiter);
 
-        let value_as_usize = (b as f32 * max_value as f32) as usize;
-        string.push_str(&value_as_usize.to_string());
+        string.push_str(&b.to_string());
         string.push_str(delimiter);
     }
     string

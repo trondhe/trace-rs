@@ -1,6 +1,6 @@
+use crate::types::PixelValueType;
 use crate::Pixel;
 
-#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Image {
     pub data: Vec<Pixel>,
@@ -11,7 +11,14 @@ pub struct Image {
 impl Image {
     pub fn new(x_length: usize, y_length: usize) -> Self {
         Image {
-            data: vec![Pixel::new(0., 0., 0.,); x_length * y_length],
+            data: vec![
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                );
+                x_length * y_length
+            ],
             x_length,
             y_length,
         }
@@ -51,28 +58,92 @@ mod test {
     fn create_line4x3(line_number: usize) -> Vec<Pixel> {
         match line_number {
             0 => vec![
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 1.),
-                Pixel::new(0., 1., 0.),
-                Pixel::new(0., 0., 0.),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
             ],
             1 => vec![
-                Pixel::new(0., 1., 1.),
-                Pixel::new(1., 0., 0.),
-                Pixel::new(1., 0., 1.),
-                Pixel::new(0., 0., 0.),
+                Pixel::new(
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                    1 as PixelValueType,
+                ),
+                Pixel::new(
+                    1 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    1 as PixelValueType,
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
             ],
             2 => vec![
-                Pixel::new(1., 1., 0.),
-                Pixel::new(1., 1., 1.),
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 0.),
+                Pixel::new(
+                    1 as PixelValueType,
+                    1 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    1 as PixelValueType,
+                    1 as PixelValueType,
+                    1 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
             ],
             _ => vec![
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 0.),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
             ],
         }
     }
@@ -91,19 +162,55 @@ mod test {
     fn create_line3x2(line_number: usize) -> Vec<Pixel> {
         match line_number {
             0 => vec![
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 1.),
-                Pixel::new(0., 1., 0.),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                    0 as PixelValueType,
+                ),
             ],
             1 => vec![
-                Pixel::new(0., 1., 1.),
-                Pixel::new(1., 0., 0.),
-                Pixel::new(1., 0., 1.),
+                Pixel::new(
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                    1 as PixelValueType,
+                ),
+                Pixel::new(
+                    1 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    1 as PixelValueType,
+                    0 as PixelValueType,
+                    1 as PixelValueType,
+                ),
             ],
             _ => vec![
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 0.),
-                Pixel::new(0., 0., 0.),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
+                Pixel::new(
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                    0 as PixelValueType,
+                ),
             ],
         }
     }

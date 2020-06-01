@@ -1,7 +1,10 @@
-use crate::ray::Ray;
+use crate::ray::{Ray, RayHit};
 use crate::types::Vec3;
 use crate::types::VecValueType;
 
+pub trait Hitable {
+    fn hit(&self, ray: Ray) -> Option<RayHit>;
+}
 #[derive(Debug, Copy, Clone)]
 pub struct Sphere {
     center: Vec3,
@@ -15,12 +18,32 @@ impl Sphere {
             radius: r,
         }
     }
+}
 
-    pub fn hit(&self, ray: Ray) -> bool {
+impl Hitable for Sphere {
+    fn hit(&self, ray: Ray) -> Option<RayHit> {
         let oc = ray.origin() - self.center;
-        let b = 2. * oc.dot(&ray.direction());
+        let b = oc.dot(&ray.direction());
         let c = oc.dot(&oc) - self.radius * self.radius;
-        let discriminant = b * b - 4. * c; // direction is unit vector => a = 1.0
-        discriminant > 0.
+        let discriminant = b * b - c;
+        if discriminant < 0.0 {
+            return None; // No real solutions, ray did not hit
+        }
+        let d_sqrt = discriminant.sqrt();
+        let t = {
+            let t1 = -1.0 * b - d_sqrt;
+            if t1 > 0.0 {
+                // t1 is always the shorter/closer distance, return if larger than 0.0
+                t1
+            } else {
+                -1.0 * b + d_sqrt
+            }
+        };
+        if t < 0.0 {
+            return None;
+        }
+        let p = ray.p(t);
+        let normal = ((p - self.center) / self.radius).normalize();
+        Some(RayHit { t, p, normal })
     }
 }
