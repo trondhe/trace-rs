@@ -54,9 +54,10 @@ impl Sensor {
 
     fn store(&mut self, x_index: usize, y_index: usize, maybe_hit: Option<RayHit>) {
         let index = self.x_size * y_index + x_index;
+        let new_sample: Vec3;
         if let Some(hit) = maybe_hit {
             let normal = hit.normal;
-            self.light_values[index] = Vec3::new(
+            new_sample = Vec3::new(
                 (normal.x + 1.) / 2.,
                 (normal.y + 1.) / 2.,
                 (normal.z + 1.) / 2.,
@@ -67,8 +68,11 @@ impl Sensor {
             let background_r = 1.0 - v + v * 0.5;
             let background_g = 1.0 - v + v * 0.7;
             let background_b = 1.0 - v + v * 1.0;
-            self.light_values[index] = Vec3::new(background_r, background_g, background_b);
-            self.samples[index] += 1;
+            new_sample = Vec3::new(background_r, background_g, background_b);
         }
+        let n = self.samples[index] as f32;
+        let previous_light = self.light_values[index];
+        self.light_values[index] = (new_sample + n * previous_light) / (n + 1.);
+        self.samples[index] += 1;
     }
 }

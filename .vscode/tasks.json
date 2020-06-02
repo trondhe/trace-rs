@@ -26,6 +26,16 @@
             "problemMatcher": "$rustc"
         },
         {
+            "label": "run release",
+            "type": "shell",
+            "command": "cargo",
+            "args": [
+                "run",
+                "--release"
+            ],
+            "problemMatcher": "$rustc"
+        },
+        {
             "label": "open outputimage",
             "type": "shell",
             "command": "C:\\Program Files\\IrfanView\\i_view64.exe",
@@ -42,6 +52,17 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "run",
+                "open outputimage"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "build, run and view release",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "run release",
                 "open outputimage"
             ],
             "problemMatcher": [

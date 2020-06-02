@@ -39,8 +39,8 @@ impl Viewport {
         let u_offset: f32 = index_length + (x_rand * index_length);
         let v_offset: f32 = index_length + (y_rand * index_length);
 
-        let u = 0. * u_offset + x_index as f32 / self.x_size as f32;
-        let v = 0. * v_offset + y_index as f32 / self.y_size as f32;
+        let u = u_offset + x_index as f32 / self.x_size as f32;
+        let v = v_offset + y_index as f32 / self.y_size as f32;
         Ray::new(
             self.point_origin,
             self.point_lower_left_corner + u * self.vec_horizontal + v * self.vec_vertical,

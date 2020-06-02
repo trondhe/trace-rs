@@ -19,9 +19,9 @@ use ppm_writer::ppm_file_write;
 use types::PixelValueType;
 use util::create_test_image;
 
-static X_SIZE: usize = 200;
-static Y_SIZE: usize = 120;
-static SAMPLES: usize = 1;
+static X_SIZE: usize = 500;
+static Y_SIZE: usize = 300;
+static SAMPLES: usize = 400;
 
 fn main() {
     let mut world = HitableList::new();
