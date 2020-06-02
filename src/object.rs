@@ -1,6 +1,5 @@
 use crate::ray::{Ray, RayHit};
 use crate::types::Vec3;
-use crate::types::VecValueType;
 
 pub trait Hitable {
     fn hit(&self, ray: Ray) -> Option<RayHit>;
@@ -8,11 +7,11 @@ pub trait Hitable {
 #[derive(Debug, Copy, Clone)]
 pub struct Sphere {
     center: Vec3,
-    radius: VecValueType,
+    radius: f32,
 }
 
 impl Sphere {
-    pub fn new(x: VecValueType, y: VecValueType, z: VecValueType, r: VecValueType) -> Self {
+    pub fn new(x: f32, y: f32, z: f32, r: f32) -> Self {
         Sphere {
             center: Vec3::new(x, y, z),
             radius: r,
@@ -43,7 +42,7 @@ impl Hitable for Sphere {
             return None;
         }
         let p = ray.p(t);
-        let normal = ((p - self.center) / self.radius).normalize();
+        let normal = (p - self.center).normalize();
         Some(RayHit { t, p, normal })
     }
 }

@@ -1,41 +1,7 @@
-use std::cmp::PartialOrd;
-
 use crate::image::Image;
 use crate::pixel::Pixel;
-use crate::types::{PixelValueType, VecValueType};
-use crate::{ppm_writer::ppm_file_write, ray::RayHit};
-
-pub fn color(v: VecValueType, maybe_hit: Option<RayHit>) -> Pixel {
-    if let Some(hit) = maybe_hit {
-        let normal = hit.normal;
-        Pixel::from_float(
-            normal.x + 1.,
-            normal.y + 1.,
-            normal.z + 1.,
-            PixelValueType::MAX as usize,
-        )
-    } else {
-        let background_r = 1.0 - v + v * 0.5;
-        let background_g = 1.0 - v + v * 0.7;
-        let background_b = 1.0 - v + v * 1.0;
-        Pixel::from_float(
-            background_r,
-            background_g,
-            background_b,
-            PixelValueType::MAX as usize,
-        )
-    }
-}
-
-pub fn clamp<T: PartialOrd>(value: T, min: T, max: T) -> T {
-    if value < min {
-        return min;
-    }
-    if value > max {
-        return max;
-    }
-    value
-}
+use crate::ppm_writer::ppm_file_write;
+use crate::types::PixelValueType;
 
 #[allow(dead_code)]
 pub fn create_test_image() {

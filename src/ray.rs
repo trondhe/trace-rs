@@ -1,4 +1,4 @@
-use crate::types::{Vec3, VecValueType};
+use crate::types::Vec3;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Ray {
@@ -14,7 +14,7 @@ impl Ray {
         }
     }
 
-    pub fn p(&self, t: VecValueType) -> Vec3 {
+    pub fn p(&self, t: f32) -> Vec3 {
         self.origin + t * self.direction
     }
 
@@ -29,7 +29,7 @@ impl Ray {
 
 #[derive(Copy, Clone)]
 pub struct RayHit {
-    pub t: VecValueType,
+    pub t: f32,
     pub p: Vec3,
     pub normal: Vec3,
 }

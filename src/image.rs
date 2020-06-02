@@ -1,15 +1,16 @@
 use crate::types::PixelValueType;
+use crate::types::Vec3;
 use crate::Pixel;
 
 #[derive(Debug)]
 pub struct Image {
     pub data: Vec<Pixel>,
-    pub x_length: usize,
-    pub y_length: usize,
+    pub x_size: usize,
+    pub y_size: usize,
 }
 
 impl Image {
-    pub fn new(x_length: usize, y_length: usize) -> Self {
+    pub fn new(x_size: usize, y_size: usize) -> Self {
         Image {
             data: vec![
                 Pixel::new(
@@ -17,24 +18,45 @@ impl Image {
                     0 as PixelValueType,
                     0 as PixelValueType,
                 );
-                x_length * y_length
+                x_size * y_size
             ],
-            x_length,
-            y_length,
+            x_size,
+            y_size,
         }
+    }
+
+    pub fn from_candela(
+        light_values: &[Vec3],
+        x_size: usize,
+        y_size: usize,
+        max_value: usize,
+    ) -> Self {
+        let mut image = Image::new(x_size, y_size);
+
+        let brightest_spot: f32 = light_values
+            .iter()
+            .map(|vec| vec.max())
+            .fold(0., |current_max: f32, v| current_max.max(v));
+        for (index, light) in light_values.iter().enumerate() {
+            let r = ((light.x / brightest_spot) * max_value as f32) as PixelValueType;
+            let g = ((light.y / brightest_spot) * max_value as f32) as PixelValueType;
+            let b = ((light.z / brightest_spot) * max_value as f32) as PixelValueType;
+            image.data[index] = Pixel::new(r, g, b);
+        }
+        image
     }
 
     pub fn write_x_vec(&mut self, y_index: usize, x_vec: &[Pixel]) {
         assert_eq!(
             x_vec.len(),
-            self.x_length,
-            "Given row vector of length {} is different from image x_length {}",
+            self.x_size,
+            "Given row vector of length {} is different from image x_size {}",
             x_vec.len(),
-            self.x_length
+            self.x_size
         );
-        let vec_index = self.x_length * y_index;
+        let vec_index = self.x_size * y_index;
         assert!(
-            self.y_length * self.x_length >= vec_index + x_vec.len(),
+            self.y_size * self.x_size >= vec_index + x_vec.len(),
             "Size of image {} is not big enough for index + row length {}",
             self.data.len(),
             vec_index + x_vec.len()
@@ -44,9 +66,9 @@ impl Image {
     }
 
     pub fn get_x_vec(&self, y_index: usize) -> Vec<Pixel> {
-        let vec_index = self.x_length * y_index;
-        let mut x_vec: Vec<Pixel> = Vec::with_capacity(self.x_length);
-        x_vec.extend_from_slice(&self.data[vec_index..vec_index + self.x_length]);
+        let vec_index = self.x_size * y_index;
+        let mut x_vec: Vec<Pixel> = Vec::with_capacity(self.x_size);
+        x_vec.extend_from_slice(&self.data[vec_index..vec_index + self.x_size]);
         x_vec
     }
 }
