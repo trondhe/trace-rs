@@ -1,10 +1,8 @@
-#![allow(dead_code)]
 extern crate nalgebra as na;
 
 mod camera;
 mod image;
 mod object;
-mod object_list;
 mod pixel;
 mod ppm_writer;
 mod ray;
@@ -15,8 +13,7 @@ mod viewport;
 use image::Image;
 
 use camera::Camera;
-use object::Sphere;
-use object_list::HitableList;
+use object::{HitableList, Sphere};
 use pixel::Pixel;
 use ppm_writer::ppm_file_write;
 use types::PixelValueType;

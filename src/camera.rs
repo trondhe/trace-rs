@@ -1,4 +1,4 @@
-use crate::object_list::HitableList;
+use crate::object::HitableList;
 use crate::ray::RayHit;
 use crate::types::Vec3;
 use crate::viewport::Viewport;
