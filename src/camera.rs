@@ -1,20 +1,30 @@
 use crate::object::HitableList;
-use crate::ray::RayHit;
+use crate::tracer::Tracer;
 use crate::types::Vec3;
 use crate::viewport::Viewport;
 
 pub struct Camera {
     vp: Viewport,
     sensor: Sensor,
+    tracer: Tracer,
     samples: usize,
 }
 
+pub struct CameraConfig {
+    pub y_size: usize,
+    pub x_size: usize,
+    pub samples: usize,
+    pub max_bounces: usize,
+    pub max_trance_length: f32,
+}
+
 impl Camera {
-    pub fn new(x_size: usize, y_size: usize, samples: usize) -> Self {
+    pub fn new(config: CameraConfig) -> Self {
         Self {
-            vp: Viewport::new(x_size, y_size),
-            sensor: Sensor::new(x_size, y_size),
-            samples,
+            vp: Viewport::new(config.x_size, config.y_size),
+            sensor: Sensor::new(config.x_size, config.y_size),
+            tracer: Tracer::new(config.max_bounces, config.max_trance_length),
+            samples: config.samples,
         }
     }
 
@@ -23,8 +33,8 @@ impl Camera {
             for x_index in 0..self.vp.x_size {
                 for _ in 0..self.samples {
                     let ray = self.vp.get_ray(x_index, y_index);
-                    let maybe_hit = hitable_list.find_foreground_hit(ray);
-                    self.sensor.store(x_index, y_index, maybe_hit);
+                    let colour = self.tracer.trace(&ray, &hitable_list);
+                    self.sensor.store(x_index, y_index, colour);
                 }
             }
         }
@@ -52,27 +62,11 @@ impl Sensor {
         }
     }
 
-    fn store(&mut self, x_index: usize, y_index: usize, maybe_hit: Option<RayHit>) {
+    fn store(&mut self, x_index: usize, y_index: usize, color: Vec3) {
         let index = self.x_size * y_index + x_index;
-        let new_sample: Vec3;
-        if let Some(hit) = maybe_hit {
-            let normal = hit.normal;
-            new_sample = Vec3::new(
-                (normal.x + 1.) / 2.,
-                (normal.y + 1.) / 2.,
-                (normal.z + 1.) / 2.,
-            );
-        } else {
-            // Background
-            let v = y_index as f32 / self.y_size as f32;
-            let background_r = 1.0 - v + v * 0.5;
-            let background_g = 1.0 - v + v * 0.7;
-            let background_b = 1.0 - v + v * 1.0;
-            new_sample = Vec3::new(background_r, background_g, background_b);
-        }
         let n = self.samples[index] as f32;
         let previous_light = self.light_values[index];
-        self.light_values[index] = (new_sample + n * previous_light) / (n + 1.);
+        self.light_values[index] = (color + n * previous_light) / (n + 1.);
         self.samples[index] += 1;
     }
 }

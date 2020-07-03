@@ -1,8 +1,8 @@
-use crate::ray::{Ray, RayHit};
+use crate::ray::Ray;
 use crate::types::Vec3;
 
 pub trait Hitable {
-    fn hit(&self, ray: Ray) -> Option<RayHit>;
+    fn hit(&self, ray: Ray) -> Option<(RayHit, HitType)>;
 }
 
 pub struct HitableList {
@@ -18,20 +18,8 @@ impl HitableList {
         self.data.push(Box::new(hitable));
     }
 
-    pub fn find_foreground_hit(&self, ray: Ray) -> Option<RayHit> {
-        let mut nearest_hit: Option<RayHit> = None;
-        for obj in &self.data {
-            if let Some(hit) = obj.hit(ray) {
-                if nearest_hit.is_none() {
-                    nearest_hit = Some(hit);
-                    continue;
-                }
-                if nearest_hit.unwrap().t > hit.t {
-                    nearest_hit = Some(hit);
-                }
-            }
-        }
-        nearest_hit
+    pub fn list(&self) -> &Vec<Box<dyn Hitable>> {
+        &self.data
     }
 }
 
@@ -51,7 +39,7 @@ impl Sphere {
 }
 
 impl Hitable for Sphere {
-    fn hit(&self, ray: Ray) -> Option<RayHit> {
+    fn hit(&self, ray: Ray) -> Option<(RayHit, HitType)> {
         let oc = ray.origin() - self.center;
         let b = oc.dot(&ray.direction());
         let c = oc.dot(&oc) - self.radius * self.radius;
@@ -74,6 +62,42 @@ impl Hitable for Sphere {
         }
         let p = ray.p(t);
         let normal = (p - self.center).normalize();
-        Some(RayHit { t, p, normal })
+
+        let hit = RayHit { t, p, normal };
+        let hit_type = HitType::Surface(Surface {
+            roughness: 0.,
+            attenuation: Vec3::new(0.6, 0.6, 0.6),
+        });
+        Some((hit, hit_type))
     }
 }
+
+#[derive(Debug, Copy, Clone)]
+pub struct Surface {
+    pub roughness: f32,
+    pub attenuation: Vec3,
+}
+
+#[derive(Debug, Copy, Clone)]
+pub struct Light {
+    pub intensity: Vec3,
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum HitType {
+    Surface(Surface),
+    LightSource(Light),
+}
+#[derive(Debug, Copy, Clone)]
+pub struct RayHit {
+    pub t: f32,
+    pub p: Vec3,
+    pub normal: Vec3,
+}
+
+// #[derive(Debug, Copy, Clone)]
+// pub enum BounceType {
+//     Diffuse,
+//     Glossy,
+//     Mirror,
+// }
