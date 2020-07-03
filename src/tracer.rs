@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::object::{HitType, HitableList, RayHit, Surface};
+use crate::object::{ObjectType, HitableList, RayHit, Surface};
 
 use crate::ray::Ray;
 use crate::types::Vec3;
@@ -41,29 +41,27 @@ impl Tracer {
                 Some((hit, hit_type)) => {
                     self.mutate_color_from(&hit_type, &mut light_intensity);
                     match hit_type {
-                        HitType::LightSource(_) => break,
-                        HitType::Surface(surface) => {
+                        ObjectType::LightSource(_) => break,
+                        ObjectType::Surface(surface) => {
                             current_ray =
                                 self.calculate_bounced_ray_from(&current_ray, hit, surface);
                             bounces += 1;
                         }
                     }
-                } // Some((hit, hitType @ HitType::Surface(_))) => {
-
-                  // }
+                }
             }
         }
         light_intensity
     }
 
-    fn mutate_color_from(&self, hit_type: &HitType, colour: &mut Vec3) {
+    fn mutate_color_from(&self, hit_type: &ObjectType, colour: &mut Vec3) {
         match hit_type {
-            HitType::Surface(surface) => {
+            ObjectType::Surface(surface) => {
                 colour.x *= surface.attenuation.x;
                 colour.y *= surface.attenuation.y;
                 colour.z *= surface.attenuation.z;
             }
-            HitType::LightSource(light) => {
+            ObjectType::LightSource(light) => {
                 colour.x *= light.intensity.x;
                 colour.y *= light.intensity.y;
                 colour.z *= light.intensity.z;
@@ -108,7 +106,7 @@ impl Tracer {
         Ray::new(hitpoint, direction)
     }
 
-    fn find_foreground_hit(&self, ray: &Ray, world: &HitableList) -> Option<(RayHit, HitType)> {
+    fn find_foreground_hit(&self, ray: &Ray, world: &HitableList) -> Option<(RayHit, ObjectType)> {
         let mut nearest_hit = None;
         for obj in world.list() {
             if let Some((hit, hit_type)) = obj.hit(*ray) {

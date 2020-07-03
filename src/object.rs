@@ -2,7 +2,7 @@ use crate::ray::Ray;
 use crate::types::Vec3;
 
 pub trait Hitable {
-    fn hit(&self, ray: Ray) -> Option<(RayHit, HitType)>;
+    fn hit(&self, ray: Ray) -> Option<(RayHit, ObjectType)>;
 }
 
 pub struct HitableList {
@@ -27,19 +27,21 @@ impl HitableList {
 pub struct Sphere {
     center: Vec3,
     radius: f32,
+    object_type: ObjectType,
 }
 
 impl Sphere {
-    pub fn new(x: f32, y: f32, z: f32, r: f32) -> Self {
+    pub fn new(x: f32, y: f32, z: f32, r: f32, object_type: ObjectType) -> Self {
         Sphere {
             center: Vec3::new(x, y, z),
             radius: r,
+            object_type,
         }
     }
 }
 
 impl Hitable for Sphere {
-    fn hit(&self, ray: Ray) -> Option<(RayHit, HitType)> {
+    fn hit(&self, ray: Ray) -> Option<(RayHit, ObjectType)> {
         let oc = ray.origin() - self.center;
         let b = oc.dot(&ray.direction());
         let c = oc.dot(&oc) - self.radius * self.radius;
@@ -64,11 +66,7 @@ impl Hitable for Sphere {
         let normal = (p - self.center).normalize();
 
         let hit = RayHit { t, p, normal };
-        let hit_type = HitType::Surface(Surface {
-            roughness: 0.,
-            attenuation: Vec3::new(0.6, 0.6, 0.6),
-        });
-        Some((hit, hit_type))
+        Some((hit, self.object_type))
     }
 }
 
@@ -84,7 +82,7 @@ pub struct Light {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub enum HitType {
+pub enum ObjectType {
     Surface(Surface),
     LightSource(Light),
 }
@@ -94,10 +92,3 @@ pub struct RayHit {
     pub p: Vec3,
     pub normal: Vec3,
 }
-
-// #[derive(Debug, Copy, Clone)]
-// pub enum BounceType {
-//     Diffuse,
-//     Glossy,
-//     Mirror,
-// }
