@@ -1,7 +1,8 @@
 use crate::object::HitableList;
 use crate::tracer::Tracer;
-use crate::types::Vec3;
+use crate::types::{TraceValueType, Vec3};
 use crate::viewport::Viewport;
+use rayon::prelude::*;
 
 pub struct Camera {
     vp: Viewport,
@@ -15,7 +16,6 @@ pub struct CameraConfig {
     pub x_size: usize,
     pub samples: usize,
     pub max_bounces: usize,
-    pub max_trance_length: f32,
 }
 
 impl Camera {
@@ -23,13 +23,13 @@ impl Camera {
         Self {
             vp: Viewport::new(config.x_size, config.y_size),
             sensor: Sensor::new(config.x_size, config.y_size),
-            tracer: Tracer::new(config.max_bounces, config.max_trance_length),
+            tracer: Tracer::new(config.max_bounces),
             samples: config.samples,
         }
     }
 
     pub fn capture(&mut self, hitable_list: HitableList) {
-        for y_index in 0..self.vp.y_size {
+        (0..self.vp.y_size).for_each(|y_index| {
             for x_index in 0..self.vp.x_size {
                 for _ in 0..self.samples {
                     let ray = self.vp.get_ray(x_index, y_index);
@@ -37,7 +37,7 @@ impl Camera {
                     self.sensor.store(x_index, y_index, colour);
                 }
             }
-        }
+        });
     }
 
     pub fn sensor_data(&self) -> &Vec<Vec3> {
@@ -64,7 +64,7 @@ impl Sensor {
 
     fn store(&mut self, x_index: usize, y_index: usize, color: Vec3) {
         let index = self.x_size * y_index + x_index;
-        let n = self.samples[index] as f32;
+        let n = self.samples[index] as TraceValueType;
         let previous_light = self.light_values[index];
         self.light_values[index] = (color + n * previous_light) / (n + 1.);
         self.samples[index] += 1;

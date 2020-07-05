@@ -1,22 +1,18 @@
 use rand::Rng;
 
-use crate::object::{ObjectType, HitableList, RayHit, Surface};
+use crate::object::{HitableList, ObjectType, RayHit, Surface};
 
 use crate::ray::Ray;
-use crate::types::Vec3;
+use crate::types::{TraceValueType, Vec3};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Tracer {
     bounces_max: usize,
-    trace_length_max: f32,
 }
 
 impl Tracer {
-    pub fn new(bounces_max: usize, trace_length_max: f32) -> Tracer {
-        Tracer {
-            bounces_max,
-            trace_length_max,
-        }
+    pub fn new(bounces_max: usize) -> Tracer {
+        Tracer { bounces_max }
     }
 
     pub fn trace(&self, ray: &Ray, world: &HitableList) -> Vec3 {
@@ -71,7 +67,7 @@ impl Tracer {
 
     fn calculate_bounced_ray_from(&self, ray_incident: &Ray, hit: RayHit, surface: Surface) -> Ray {
         let mut rng = rand::thread_rng();
-        let rand = rng.gen::<f32>() * 2. - 1.; // 0-1
+        let rand = rng.gen::<TraceValueType>() * 2. - 1.; // 0-1
 
         if surface.roughness > rand {
             // Mirror bounce
@@ -91,8 +87,8 @@ impl Tracer {
 
     fn diffuse(&self, hitpoint: Vec3, normal: Vec3) -> Ray {
         let mut rng = rand::thread_rng();
-        let j_scale = rng.gen::<f32>() * 2. - 1.; // 0 - 1 range
-        let k_scale = rng.gen::<f32>() * 2. - 1.; // 0 - 1 range
+        let j_scale = rng.gen::<TraceValueType>() * 2. - 1.; // 0 - 1 range
+        let k_scale = rng.gen::<TraceValueType>() * 2. - 1.; // 0 - 1 range
         let i = normal;
         let j = if (i.x, i.y, i.z) == (0., 0., 1.) {
             // i == [x,y,z] => j == [-y, x, 0] gives [0, 0, 0] in this given case

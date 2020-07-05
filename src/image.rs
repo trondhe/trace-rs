@@ -1,5 +1,5 @@
 use crate::types::PixelValueType;
-use crate::types::Vec3;
+use crate::types::{TraceValueType, Vec3};
 use crate::Pixel;
 
 #[derive(Debug)]
@@ -33,17 +33,42 @@ impl Image {
     ) -> Self {
         let mut image = Image::new(x_size, y_size);
 
-        let brightest_spot: f32 = light_values
-            .iter()
-            .map(|vec| vec.max())
-            .fold(0., |current_max: f32, v| current_max.max(v));
+        // let brightest_spot: TraceValueType = light_values
+        //     .iter()
+        //     .map(|vec| vec.max())
+        //     .fold(0., |current_max: TraceValueType, v| current_max.max(v));
         for (index, light) in light_values.iter().enumerate() {
-            let r = ((light.x / brightest_spot) * max_value as f32) as PixelValueType;
-            let g = ((light.y / brightest_spot) * max_value as f32) as PixelValueType;
-            let b = ((light.z / brightest_spot) * max_value as f32) as PixelValueType;
+            let r = Image::clamp_integer(
+                (light.x.sqrt()) * max_value as TraceValueType,
+                0,
+                PixelValueType::MAX as isize,
+            ) as PixelValueType;
+            let g = Image::clamp_integer(
+                (light.y.sqrt()) * max_value as TraceValueType,
+                0,
+                PixelValueType::MAX as isize,
+            ) as PixelValueType;
+            let b = Image::clamp_integer(
+                (light.z.sqrt()) * max_value as TraceValueType,
+                0,
+                PixelValueType::MAX as isize,
+            ) as PixelValueType;
+            // let r = ((light.x / brightest_spot) * max_value as TraceValueType) as PixelValueType;
+            // let g = ((light.y / brightest_spot) * max_value as TraceValueType) as PixelValueType;
+            // let b = ((light.z / brightest_spot) * max_value as TraceValueType) as PixelValueType;
             image.data[index] = Pixel::new(r, g, b);
         }
         image
+    }
+
+    fn clamp_integer(input: TraceValueType, min: isize, max: isize) -> isize {
+        if input as isize > max {
+            max
+        } else if (input as isize) < min {
+            min
+        } else {
+            input as isize
+        }
     }
 
     pub fn write_x_vec(&mut self, y_index: usize, x_vec: &[Pixel]) {

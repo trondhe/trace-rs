@@ -1,4 +1,4 @@
-use crate::types::Vec3;
+use crate::types::{TraceValueType, Vec3};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Ray {
@@ -14,7 +14,7 @@ impl Ray {
         }
     }
 
-    pub fn p(&self, t: f32) -> Vec3 {
+    pub fn p(&self, t: TraceValueType) -> Vec3 {
         self.origin + t * self.direction
     }
 

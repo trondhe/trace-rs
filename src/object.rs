@@ -1,5 +1,5 @@
 use crate::ray::Ray;
-use crate::types::Vec3;
+use crate::types::{TraceValueType, Vec3};
 
 pub trait Hitable {
     fn hit(&self, ray: Ray) -> Option<(RayHit, ObjectType)>;
@@ -26,12 +26,18 @@ impl HitableList {
 #[derive(Debug, Copy, Clone)]
 pub struct Sphere {
     center: Vec3,
-    radius: f32,
+    radius: TraceValueType,
     object_type: ObjectType,
 }
 
 impl Sphere {
-    pub fn new(x: f32, y: f32, z: f32, r: f32, object_type: ObjectType) -> Self {
+    pub fn new(
+        x: TraceValueType,
+        y: TraceValueType,
+        z: TraceValueType,
+        r: TraceValueType,
+        object_type: ObjectType,
+    ) -> Self {
         Sphere {
             center: Vec3::new(x, y, z),
             radius: r,
@@ -72,7 +78,7 @@ impl Hitable for Sphere {
 
 #[derive(Debug, Copy, Clone)]
 pub struct Surface {
-    pub roughness: f32,
+    pub roughness: TraceValueType,
     pub attenuation: Vec3,
 }
 
@@ -88,7 +94,7 @@ pub enum ObjectType {
 }
 #[derive(Debug, Copy, Clone)]
 pub struct RayHit {
-    pub t: f32,
+    pub t: TraceValueType,
     pub p: Vec3,
     pub normal: Vec3,
 }
