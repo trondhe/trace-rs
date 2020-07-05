@@ -108,6 +108,10 @@ impl Tracer {
         let mut nearest_hit = None;
         for obj in world.list() {
             if let Some((hit, hit_type)) = obj.hit(*ray) {
+                if hit.t < 0.00001 {
+                    // Fix shadow acne problem, avoiding repeated bounces of the same object due to floating point imprecision
+                    continue;
+                }
                 if nearest_hit.is_none() {
                     nearest_hit = Some((hit, hit_type));
                     continue;
