@@ -69,11 +69,12 @@ impl Tracer {
         let mut rng = rand::thread_rng();
         let rand = rng.gen::<TraceValueType>() * 2. - 1.; // 0-1
 
-        if surface.roughness > rand {
-            // Mirror bounce
-            self.reflect(&ray_incident, hit.p, hit.normal)
-        } else {
+        // Comparing [0, 1] random to [0, 1] roughness number.
+        // A roughness of 1 will always result in a diffuse bounce
+        if surface.roughness >= rand {
             self.diffuse(hit.p, hit.normal)
+        } else {
+            self.reflect(&ray_incident, hit.p, hit.normal)
         }
     }
 
