@@ -88,6 +88,7 @@ impl Tracer {
 
     fn diffuse(&self, hitpoint: Vec3, normal: Vec3) -> Ray {
         let mut rng = rand::thread_rng();
+        let i_scale = rng.gen::<TraceValueType>() * 2. - 1.; // 0 - 1 range
         let j_scale = rng.gen::<TraceValueType>() * 2. - 1.; // 0 - 1 range
         let k_scale = rng.gen::<TraceValueType>() * 2. - 1.; // 0 - 1 range
         let i = normal;
@@ -99,7 +100,7 @@ impl Tracer {
             Vec3::new(-i.y, i.x, 0.)
         };
         let k = i.cross(&j);
-        let direction = i + j_scale * j + k_scale * k;
+        let direction = i_scale * i + j_scale * j + k_scale * k;
         Ray::new(hitpoint, direction)
     }
 
