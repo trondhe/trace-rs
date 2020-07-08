@@ -26,23 +26,36 @@ static SAMPLES: usize = 100;
 static MAX_BOUNCES: usize = 8;
 
 fn main() {
-    let material_blank_metal = ObjectType::Surface(Surface {
-        roughness: 0.9999,
-        attenuation: Vec3::new(0.99, 0.99, 0.99),
+    let material_metal_blank = ObjectType::Surface(Surface {
+        roughness: 0.,
+        attenuation: Vec3::new(0.95, 0.95, 0.95),
     });
-    let material_matte_red = ObjectType::Surface(Surface {
-        roughness: 0.2,
-        attenuation: Vec3::new(0.99, 0.50, 0.50),
+    let _material_metal_matte = ObjectType::Surface(Surface {
+        roughness: 0.85,
+        attenuation: Vec3::new(0.80, 0.80, 0.80),
+    });
+    let material_grass_like = ObjectType::Surface(Surface {
+        roughness: 0.95,
+        attenuation: Vec3::new(0.65, 0.77, 0.01),
+    });
+    let material_red_matte = ObjectType::Surface(Surface {
+        roughness: 1.,
+        attenuation: Vec3::new(0.99, 0.20, 0.20),
+    });
+    let material_red_blank = ObjectType::Surface(Surface {
+        roughness: 0.05,
+        attenuation: Vec3::new(0.99, 0.20, 0.20),
     });
     let light_source = ObjectType::LightSource(Light {
         intensity: Vec3::new(2., 1.5, 0.5),
     });
 
     let mut world = HitableList::new();
-    world.push(Sphere::new(0., 0., -1., 0.3, material_blank_metal));
-    world.push(Sphere::new(0.5, 0., -0.7, 0.15, material_matte_red));
-    world.push(Sphere::new(0., -100.3, -1., 100., material_blank_metal));
-    world.push(Sphere::new(10., 10., -25., 1., light_source));
+    world.push(Sphere::new(0., 0., -1., 0.3, material_metal_blank));
+    world.push(Sphere::new(0.6, 0., -1., 0.3, material_red_blank));
+    world.push(Sphere::new(-0.6, 0., -1., 0.3, material_red_matte));
+    world.push(Sphere::new(0., -100.3, -1., 100., material_grass_like));
+    // world.push(Sphere::new(10., 10., -25., 1., light_source));
 
     let mut camera = Camera::new(CameraConfig {
         x_size: X_SIZE,
