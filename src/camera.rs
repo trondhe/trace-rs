@@ -2,7 +2,7 @@ use crate::object::HitableList;
 use crate::tracer::Tracer;
 use crate::types::{Frame, TraceValueType, Vec3};
 use crate::viewport::Viewport;
-// use rayon::prelude::*;
+use rayon::prelude::*;
 
 pub struct Camera {
     vp: Viewport,
@@ -30,7 +30,7 @@ impl Camera {
 
     pub fn capture(&mut self, hitable_list: HitableList) {
         let frames_collection = (0..self.samples)
-            .into_iter()
+            .into_par_iter()
             .map(|_| {
                 let mut frame = vec![Vec3::new(0., 0., 0.); self.vp.y_size * self.vp.x_size];
                 for y_index in 0..self.vp.y_size {
