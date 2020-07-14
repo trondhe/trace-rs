@@ -1,6 +1,6 @@
 use crate::object::HitableList;
 use crate::tracer::Tracer;
-use crate::types::{TraceValueType, Vec3};
+use crate::types::{Frame, TraceValueType, Vec3};
 use crate::viewport::Viewport;
 // use rayon::prelude::*;
 
@@ -29,26 +29,32 @@ impl Camera {
     }
 
     pub fn capture(&mut self, hitable_list: HitableList) {
-        (0..self.samples).for_each(|_| {
-            let mut frame = vec![Vec3::new(0., 0., 0.); self.vp.y_size * self.vp.x_size];
-            for y_index in 0..self.vp.y_size {
-                for x_index in 0..self.vp.x_size {
-                    let ray = self.vp.get_ray(x_index, y_index);
-                    let index = self.vp.x_size * y_index + x_index;
-                    frame[index] = self.tracer.trace(&ray, &hitable_list);
+        let frames_collection = (0..self.samples)
+            .into_iter()
+            .map(|_| {
+                let mut frame = vec![Vec3::new(0., 0., 0.); self.vp.y_size * self.vp.x_size];
+                for y_index in 0..self.vp.y_size {
+                    for x_index in 0..self.vp.x_size {
+                        let ray = self.vp.get_ray(x_index, y_index);
+                        let index = self.vp.x_size * y_index + x_index;
+                        frame[index] = self.tracer.trace(&ray, &hitable_list);
+                    }
                 }
-            }
+                frame
+            })
+            .collect::<Vec<Frame>>();
+        for frame in frames_collection {
             self.sensor.store_frame(&frame);
-        });
+        }
     }
 
-    pub fn sensor_data(&self) -> &Vec<Vec3> {
+    pub fn sensor_data(&self) -> &Frame {
         &self.sensor.light_values
     }
 }
 
 pub struct Sensor {
-    light_values: Vec<Vec3>,
+    light_values: Frame,
     samples: usize,
     pub x_size: usize,
     pub y_size: usize,
@@ -64,7 +70,7 @@ impl Sensor {
         }
     }
 
-    fn store_frame(&mut self, frame: &Vec<Vec3>) {
+    fn store_frame(&mut self, frame: &Frame) {
         assert!(self.light_values.len() == frame.len());
         let n = self.samples as TraceValueType;
         for index in 0..self.light_values.len() {

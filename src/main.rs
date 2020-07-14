@@ -20,9 +20,9 @@ use ppm_writer::ppm_file_write;
 use types::{PixelValueType, Vec3};
 use util::create_test_image;
 
-static X_SIZE: usize = 600;
-static Y_SIZE: usize = 500;
-static SAMPLES: usize = 100;
+static X_SIZE: usize = 250;
+static Y_SIZE: usize = 150;
+static SAMPLES: usize = 50;
 static MAX_BOUNCES: usize = 8;
 
 fn main() {
@@ -46,15 +46,33 @@ fn main() {
         roughness: 0.05,
         attenuation: Vec3::new(0.99, 0.20, 0.20),
     });
-    let light_source = ObjectType::LightSource(Light {
+    let _light_source = ObjectType::LightSource(Light {
         intensity: Vec3::new(2., 1.5, 0.5),
     });
 
     let mut world = HitableList::new();
-    world.push(Sphere::new(0., 0., -1., 0.3, material_metal_blank));
-    world.push(Sphere::new(0.6, 0., -1., 0.3, material_red_blank));
-    world.push(Sphere::new(-0.6, 0., -1., 0.3, material_red_matte));
-    world.push(Sphere::new(0., -100.3, -1., 100., material_grass_like));
+    world.push(Box::new(Sphere::new(
+        0.,
+        0.,
+        -1.,
+        0.3,
+        material_metal_blank,
+    )));
+    world.push(Box::new(Sphere::new(0.6, 0., -1., 0.3, material_red_blank)));
+    world.push(Box::new(Sphere::new(
+        -0.6,
+        0.,
+        -1.,
+        0.3,
+        material_red_matte,
+    )));
+    world.push(Box::new(Sphere::new(
+        0.,
+        -100.3,
+        -1.,
+        100.,
+        material_grass_like,
+    )));
     // world.push(Sphere::new(10., 10., -25., 1., light_source));
 
     let mut camera = Camera::new(CameraConfig {

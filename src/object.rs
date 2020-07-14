@@ -6,7 +6,7 @@ pub trait Hitable {
 }
 
 pub struct HitableList {
-    data: Vec<Box<dyn Hitable>>,
+    data: Vec<Box<dyn Hitable + Sync>>,
 }
 
 impl HitableList {
@@ -14,11 +14,11 @@ impl HitableList {
         Self { data: Vec::new() }
     }
 
-    pub fn push<T: Hitable + 'static>(&mut self, hitable: T) {
-        self.data.push(Box::new(hitable));
+    pub fn push(&mut self, hitable: Box<dyn Hitable + Sync>) {
+        self.data.push(hitable);
     }
 
-    pub fn list(&self) -> &Vec<Box<dyn Hitable>> {
+    pub fn list(&self) -> &Vec<Box<dyn Hitable + Sync>> {
         &self.data
     }
 }
