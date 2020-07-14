@@ -38,7 +38,7 @@
         {
             "label": "open outputimage",
             "type": "shell",
-            "command": "C:\\Program Files\\IrfanView\\i_view64.exe",
+            "command": "i_view64.exe",
             "args": [
                 "output.ppm"
             ],
