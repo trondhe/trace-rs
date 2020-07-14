@@ -2,7 +2,7 @@ use crate::object::HitableList;
 use crate::tracer::Tracer;
 use crate::types::{TraceValueType, Vec3};
 use crate::viewport::Viewport;
-use rayon::prelude::*;
+// use rayon::prelude::*;
 
 pub struct Camera {
     vp: Viewport,
@@ -29,14 +29,16 @@ impl Camera {
     }
 
     pub fn capture(&mut self, hitable_list: HitableList) {
-        (0..self.vp.y_size).for_each(|y_index| {
-            for x_index in 0..self.vp.x_size {
-                for _ in 0..self.samples {
+        (0..self.samples).for_each(|_| {
+            let mut frame = vec![Vec3::new(0., 0., 0.); self.vp.y_size * self.vp.x_size];
+            for y_index in 0..self.vp.y_size {
+                for x_index in 0..self.vp.x_size {
                     let ray = self.vp.get_ray(x_index, y_index);
-                    let colour = self.tracer.trace(&ray, &hitable_list);
-                    self.sensor.store(x_index, y_index, colour);
+                    let index = self.vp.x_size * y_index + x_index;
+                    frame[index] = self.tracer.trace(&ray, &hitable_list);
                 }
             }
+            self.sensor.store_frame(&frame);
         });
     }
 
@@ -47,7 +49,7 @@ impl Camera {
 
 pub struct Sensor {
     light_values: Vec<Vec3>,
-    samples: Vec<usize>,
+    samples: usize,
     pub x_size: usize,
     pub y_size: usize,
 }
@@ -56,17 +58,20 @@ impl Sensor {
     pub fn new(x_size: usize, y_size: usize) -> Self {
         Self {
             light_values: vec![Vec3::new(0., 0., 0.); x_size * y_size],
-            samples: vec![0; x_size * y_size],
+            samples: 0,
             x_size,
             y_size,
         }
     }
 
-    fn store(&mut self, x_index: usize, y_index: usize, color: Vec3) {
-        let index = self.x_size * y_index + x_index;
-        let n = self.samples[index] as TraceValueType;
-        let previous_light = self.light_values[index];
-        self.light_values[index] = (color + n * previous_light) / (n + 1.);
-        self.samples[index] += 1;
+    fn store_frame(&mut self, frame: &Vec<Vec3>) {
+        assert!(self.light_values.len() == frame.len());
+        let n = self.samples as TraceValueType;
+        for index in 0..self.light_values.len() {
+            let light_previous = self.light_values[index];
+            let light_new = frame[index];
+            self.light_values[index] = (light_new + n * light_previous) / (n + 1.);
+        }
+        self.samples += 1;
     }
 }
